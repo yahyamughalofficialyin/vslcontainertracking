@@ -39,7 +39,7 @@
 
 
             <div class="site-logo">
-              <a href="index.php" class="text-black"><span class="text-primary">Depot</a>
+              <a href="index.php" class="text-black"><img src="images/logo.png" alt="" style="width: 15%;" class="logo"></a>
             </div>
 
             <div class="col-12">

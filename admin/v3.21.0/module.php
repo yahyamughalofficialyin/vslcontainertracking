@@ -1,10 +1,6 @@
 <?php
 
 session_start();
-if (!isset($_SESSION['admin_id'])) {
-    header("location: login.php");
-    exit();
-}
 
 include "config.php";
 
@@ -46,9 +42,6 @@ if (isset($_SESSION['admin_id'])) {
     $stmt->close();
 }
 
-if($addedBy=='Admin'){
-    $superadmin = true;
-}
 
 function generateRandomId($length = 8)
     {

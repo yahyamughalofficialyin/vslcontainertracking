@@ -1,4 +1,13 @@
+
 <?php include "module.php"; ?>
+
+<?php
+if (!isset($_SESSION['admin_id'])) {
+    header("location: login.php");
+    exit();
+}
+
+?>
 <script>
     var isFluid = JSON.parse(localStorage.getItem('isFluid'));
     if (isFluid) {
@@ -532,14 +541,6 @@
                                 </a>
                             </li>
                         <?php } ?>
-                        <?php
-                        if ($container) {
-                        ?>
-                            <li class="nav-item"><a class="nav-link" href="container.php">
-                                    <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Container</span></div>
-                                </a>
-                            </li>
-                        <?php } ?>
 
                         <?php
 
@@ -733,33 +734,38 @@
                                 </a><!-- more inner pages--></li>
                         </ul>
                     <?php } ?>
-                    <?php if($kanban){ ?>
+                    <?php if ($kanban) { ?>
                         <a class="nav-link" href="app/kanban.php" role="button">
-                        <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fab fa-trello"></span></span><span class="nav-link-text ps-1">Kanban</span></div>
-                    </a>
+                            <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fab fa-trello"></span></span><span class="nav-link-text ps-1">Kanban</span></div>
+                        </a>
                     <?php } ?>
                     <?php
                     if ($superadmin) {
                     ?>
 
-<a class="nav-link" href="admin.php" role="button">
+                        <a class="nav-link" href="admin.php" role="button">
                             <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="bx bx-user"></span></span><span class="nav-link-text ps-1">Admin</span></div>
                         </a>
-                        <?php } ?>
-                        <?php if($employee){ ?>
+                    <?php } ?>
+                    <?php if ($employee) { ?>
                         <a class="nav-link" href="employee.php" role="button">
                             <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="bx bx-group"></span></span><span class="nav-link-text ps-1">Employee</span></div>
                         </a>
-                        <?php } ?>
-                    
+                    <?php } ?>
+
                     <?php
                     if ($container) {
                     ?>
 
-<a class="nav-link" href="container.php" role="button">
+                        <a class="nav-link" href="container.php" role="button">
                             <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="bx bxs-truck"></span></span><span class="nav-link-text ps-1">Container</span></div>
                         </a>
-                        <?php } ?>
+                    <?php } ?>
+
+
+                    <a class="nav-link" href="feedback.php" role="button">
+                        <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="bx bx-book-content"></span></span><span class="nav-link-text ps-1">Feedback</span></div>
+                    </a>
                     <?php
 
                     if ($social) {
@@ -1454,7 +1460,7 @@
                     </li>
                 <?php } ?>
             </ul>
-            
+
         </div>
     </div>
 </nav>

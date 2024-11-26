@@ -138,92 +138,142 @@ if (isset($_POST['delete_admin'])) {
     echo "Admin deleted successfully!";
 }
 
-if ($container) {
 
-    // Direct Container Creation
-    if (isset($_POST['create_container_direct'])) {
-        function generateContainerNo()
-        {
-            return "VSL" . strtoupper(substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 8));
-        }
+// ***************************** UTILITY FUNCTIONS *****************************
 
-        $containerNo = generateContainerNo();
-        $status = "In Queue";
-        $addedBy = $adminId; // Adjust as needed
-        $sql = "INSERT INTO container (id, ContainerNo, Status, AddedBy) VALUES (UUID(), ?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("sss", $containerNo, $status, $addedBy);
-        if ($stmt->execute()) {
-            echo "Container created successfully!";
-        } else {
-            echo "Failed to create container!";
-        }
-    }
-
-    if (isset($_POST['delete_container']) && !empty($_POST['id'])) {
-        $sql = "DELETE FROM container WHERE id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("s", $_POST['id']);
-        if ($stmt->execute()) {
-            echo "Container deleted successfully!";
-        } else {
-            echo "Failed to delete container!";
-        }
-    }
-
-    if (isset($_POST['update_container'])) {
-        $sql = "UPDATE container SET Status = ?, GateIn = ?, GateOut = ?, POL = ?, POD = ?, VIAPORT = ? WHERE id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param(
-            "sssssss",
-            $_POST['status'],
-            $_POST['gatein'],
-            $_POST['gateout'],
-            $_POST['pol'],
-            $_POST['pod'],
-            $_POST['viaport'],
-            $_POST['id']
-        );
-        if ($stmt->execute()) {
-            echo "Container updated successfully!";
-        } else {
-            echo "Failed to update container!";
-        }
-
-
-        // Read Containers
-        if (isset($_GET['fetch_containers'])) {
-            $sql = "SELECT * FROM container";
-            $result = $conn->query($sql);
-            $containers = [];
-            if ($result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
-                    $containers[] = $row;
-                }
-            }
-            echo json_encode($containers);
-        }
-    }
-
-
-    // Read Containers
-    if (isset($_GET['fetch_containers'])) {
-        $sql = "SELECT * FROM container";
-        $result = $conn->query($sql);
-        $containers = [];
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $containers[] = $row;
-            }
-        }
-        echo json_encode($containers);
-    }
-
-    
+function jsonResponse($data)
+{
+    echo json_encode($data);
+    exit;
 }
 
+function handleDatabaseError($conn)
+{
+    echo '<div class="alert alert-danger">Error: ' . $conn->error . '</div>';
+    exit;
+}
 
-// ******************************************************************CONNECTION CLOSED******************************************************************
+// ***************************** CONTAINER CRUD *****************************
 
+if (isset($_POST['create_container_direct'])) {
+    function generateContainerNo()
+    {
+        return "VSL" . strtoupper(substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 8));
+    }
+
+    $containerNo = generateContainerNo();
+    $status = "In Queue";
+    $addedBy = $adminId; // Replace this with your logic for fetching the admin ID
+
+    $sql = "INSERT INTO container (id, ContainerNo, Status, AddedBy) VALUES (UUID(), ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sss", $containerNo, $status, $addedBy);
+
+    if ($stmt->execute()) {
+        echo "Container created successfully!";
+    } else {
+        handleDatabaseError($conn);
+    }
+}
+
+if (isset($_POST['delete_container']) && !empty($_POST['id'])) {
+    $sql = "DELETE FROM container WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $_POST['id']);
+
+    if ($stmt->execute()) {
+        echo "Container deleted successfully!";
+    } else {
+        handleDatabaseError($conn);
+    }
+}
+
+if (isset($_POST['update_container'])) {
+    $sql = "UPDATE container SET Status = ?, GateIn = ?, GateOut = ?, POL = ?, POD = ?, VIAPORT = ? WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param(
+        "sssssss",
+        $_POST['status'],
+        $_POST['gatein'],
+        $_POST['gateout'],
+        $_POST['pol'],
+        $_POST['pod'],
+        $_POST['viaport'],
+        $_POST['id']
+    );
+
+    if ($stmt->execute()) {
+        echo "Container updated successfully!";
+    } else {
+        handleDatabaseError($conn);
+    }
+}
+
+if (isset($_GET['fetch_containers'])) {
+    $sql = "SELECT * FROM container";
+    $result = $conn->query($sql);
+    $containers = [];
+
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $containers[] = $row;
+        }
+    }
+    jsonResponse($containers);
+}
+
+// ***************************** CONTACT US CRUD *****************************
+
+if (isset($_POST['contact_us'])) {
+    $id = uniqid();
+    $fname = htmlspecialchars(trim($_POST['fname']));
+    $lname = htmlspecialchars(trim($_POST['lname']));
+    $email = htmlspecialchars(trim($_POST['email']));
+    $message = htmlspecialchars(trim($_POST['message']));
+
+    if (empty($fname) || empty($lname) || empty($email) || empty($message)) {
+        echo '<div class="alert alert-danger">All fields are required.</div>';
+        exit;
+    }
+
+    $sql = "INSERT INTO feedback (id, FirstName, LastName, Email, Message) VALUES (?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sssss", $id, $fname, $lname, $email, $message);
+
+    if ($stmt->execute()) {
+        echo '<div class="alert alert-success">Your feedback has been submitted successfully.</div>';
+    } else {
+        handleDatabaseError($conn);
+    }
+}
+
+if (isset($_POST['delete_feedback']) && !empty($_POST['id'])) {
+    $sql = "DELETE FROM feedback WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $_POST['id']);
+
+    if ($stmt->execute()) {
+        echo 'Feedback deleted successfully!';
+    } else {
+        handleDatabaseError($conn);
+    }
+}
+
+if (isset($_GET['fetch_feedbacks'])) {
+    $sql = "SELECT * FROM feedback";
+    $result = $conn->query($sql);
+    $feedbacks = [];
+
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $feedbacks[] = $row;
+        }
+        jsonResponse($feedbacks);
+    } else {
+        jsonResponse(['error' => 'Failed to fetch feedbacks.']);
+    }
+}
+
+// ***************************** CONNECTION CLOSE *****************************
 
 $conn->close();

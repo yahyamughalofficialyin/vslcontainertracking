@@ -12,19 +12,23 @@ if (isset($_POST['submit'])) {
     $password = $_POST['password'];
     
     // Prepare a SQL statement to retrieve the admin details
-    $stmt = $conn->prepare("SELECT id, email, phone, password FROM admin WHERE email = ? OR phone = ?");
+    $stmt = $conn->prepare("SELECT id, name, email, phone, password, image FROM admin WHERE email = ? OR phone = ?");
     $stmt->bind_param("ss", $input, $input);
     $stmt->execute();
     $stmt->store_result();
     
     // If admin found, verify password
     if ($stmt->num_rows > 0) {
-        $stmt->bind_result($id, $dbEmail, $dbPhone, $dbPassword);
+        $stmt->bind_result($id, $dbName, $dbEmail, $dbPhone, $dbPassword, $dbImage);
         $stmt->fetch();
         
         if (password_verify($password, $dbPassword)) {
             // Set session variable
             $_SESSION['admin_id'] = $id;
+            $_SESSION['name'] = $$dbName;
+            $_SESSION['email'] = $$dbEmail;
+            $_SESSION['phone'] = $dbPhone;
+            $_SESSION['image'] = $dbImage;
             header("Location: index.php"); // Redirect to admin dashboard
             exit();
         } else {

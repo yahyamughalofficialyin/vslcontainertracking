@@ -4,15 +4,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vista Shipping Line (VSL) - Container Shipping Tracking & Logistics Solutions</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Track your shipments with Vista Shipping Line (VSL). We provide reliable container shipping, logistics solutions, and exceptional service worldwide.">
+    <meta name="keywords" content="Vista Shipping Line, VSL, container shipping, shipment tracking, logistics, shipping services, global shipping, cargo services, transport solutions">
+    <meta name="author" content="Vista Line Shipping">
+    <meta name="robots" content="index, follow">
+
+    <!-- Social Media Meta Tags -->
+    <meta property="og:title" content="Vista Shipping Line (VSL) - Reliable Container Shipping & Tracking">
+    <meta property="og:description" content="Explore global container shipping and shipment tracking services with Vista Shipping Line (VSL). Reliable, efficient, and trusted logistics solutions.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.vistashippingline.com">
+    <meta property="og:image" content="https://www.vistashippingline.com/images/slider.jpg">
+
+    <meta name="twitter:card" content="images/slider.jpg">
+    <meta name="twitter:title" content="Vista Shipping Line (VSL) - Reliable Container Shipping & Tracking">
+    <meta name="twitter:description" content="Track your shipments and explore reliable logistics solutions with Vista Shipping Line (VSL).">
+    <meta name="twitter:image" content="https://www.vistashippingline.com/images/twitter-card.jpg">
+
+    <!-- Favicon -->
+    <link rel="icon" href="images/logo.png" type="image/x-icon">
+
     <?php
-    
+
     if (isset($_GET['id'])) { // Use isset to check if 'id' is present in the URL
         $id = $_GET['id']; // Secure the input to prevent SQL injection
     ?>
-    <title><?php echo 'Tracking Results For ' . $id ?></title>
-    <?php } else{ ?>
+        <title><?php echo 'Tracking Results For ' . $id ?></title>
+    <?php } else { ?>
         <title>No Container Number Found</title>
-        <?php } ?>
+    <?php } ?>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
@@ -202,8 +225,8 @@
                                 <img class="icon" src="https://i.imgur.com/9nnc9Et.png">
                                 <div class="d-flex flex-column">
                                     <p class="font-weight-bold">Loaded<br>
+                                    <b><?php echo $pol ?></b>
                                     <p><?php echo $gatein; ?></p>
-                                    </p>
                                     </p>
                                 </div>
                             </div>
@@ -211,15 +234,18 @@
                                 <img class="icon" src="https://i.imgur.com/u1AzR7w.png">
                                 <div class="d-flex flex-column">
                                     <p class="font-weight-bold">Discharged<br>
-                                    <p>
                                         <?php
                                         if ($status == 'discharged') {
-                                            echo $gateout;
+                                            ?>
+                                            <b><?php echo $pod ?></b>
+                                            <p>
+                                        <?php echo $gateout; ?>
+                                            </p>
+                                        <?php
                                         } else {
                                             echo 'Not Discharged Yet';
                                         }
                                         ?>
-                                    </p>
                                     </p>
                                 </div>
                             </div>
